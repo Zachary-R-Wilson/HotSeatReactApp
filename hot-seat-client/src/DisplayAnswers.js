@@ -1,7 +1,7 @@
 import React from 'react';
-import './JoinGame.css';
+//import './JoinGame.css';
 
-class JoinGame extends React.Component{
+class DisplayAnswers extends React.Component{
     constructor(props){
         super(props);
         this.state = {
@@ -16,7 +16,7 @@ class JoinGame extends React.Component{
 
     render() {
         return(
-            <div className="form">
+            <div>
                 <label for="Name">Enter Your Name:</label>
                 <br></br>
                 <input type="text" id="Name" ref={(ref) => this.name = ref}></input>
@@ -27,4 +27,4 @@ class JoinGame extends React.Component{
     }
 }
 
-export default JoinGame;
+export default DisplayAnswers;
