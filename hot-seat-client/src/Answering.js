@@ -5,23 +5,23 @@ class Answering extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            name: ""
+            answer: ""
         }
     }
 
-    GoClick = () => {
-        var name = this.name.value;
-        this.props.onNameEnter(name);
+    SubmitAnswerClick = () => {
+        var answer = this.answer.value;
+        this.props.onAnswerEnter(answer);
     }
 
     render() {
         return(
-            <div className='form'>
-                <label for="Name">Enter Your Name:</label>
-                <br></br>
-                <input type="text" id="Name" ref={(ref) => this.name = ref}></input>
+            <div className="form">
+                <label for="answer">Answer the Question:</label>
                 <br/>
-                <button type="button" onClick={this.GoClick}>GO!</button>
+                <input type="text" id="answer" ref={(ref) => this.answer = ref}/>
+                <br/>
+                <button type="button" onClick={this.SubmitAnswerClick}>Submit</button>
             </div>
         )
     }

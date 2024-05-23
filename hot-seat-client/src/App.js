@@ -5,6 +5,7 @@ import Answering from './Answering';
 import Voting from './Voting';
 import DisplayAnswers from './DisplayAnswers';
 import Scoring from './Scoring';
+import Waiting from './Waiting';
 
 const gameStates = ["join", "answer", "vote", "display", "score"];
 
@@ -27,6 +28,13 @@ class App extends React.Component {
     });
   }
 
+  handleAnswerChange = (uAnswer) => {
+    this.setState({
+      answer: uAnswer,
+      gameState: gameStates[2]
+    });
+  }
+
   render() {
     if(this.state.gameState === gameStates[0]){
       return (
@@ -38,7 +46,7 @@ class App extends React.Component {
     else if(this.state.gameState === gameStates[1]){
       return (
         <div className="App">
-          <Answering onNameEnter={this.handleNameEnter}/>
+          <Answering onAnswerEnter={this.handleAnswerChange}/>
         </div>
       );
     }
@@ -65,12 +73,11 @@ class App extends React.Component {
     }
     else{
       return(
-        <p>waiting . . .</p>
+        <div className="App">
+          <Waiting />
+        </div>
       );
     }
-
-
-
   }
 }
 
