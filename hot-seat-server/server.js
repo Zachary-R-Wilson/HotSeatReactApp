@@ -4,8 +4,11 @@ const socket = require('socket.io');
 const compression = require('compression');
 
 var state = {
-  "General": [],
-  "Announcements": []
+  "host": 0,
+  "players": [],
+  "answers": [],
+  "votes": [],
+  gameState: ""
 }
 
 var app = express();
@@ -33,7 +36,7 @@ app.all('*', function (req, res) {
 
 io.on('connection', (socket) => {
   // attach the event listener to the user's socket
-  //socket.on('message', handleMessage);
+  socket.on('message', handleMessage);
   // send the current state to the user
   //socket.emit('update-state', state);
   console.log("User Connected.")
@@ -41,11 +44,59 @@ io.on('connection', (socket) => {
 
 server.listen(port, () => console.log(`Listening on http://localhost:${port}`));
 
-// function handleMessage(msg) {
-//     state[msg.room].push({
-//     name: msg.name,
-//     date: msg.date,
-//     content: msg.content
-//   });
-//   io.emit('message', msg);
-// }
+function handleMessage(msg) {
+  switch(msg.gameState){
+    case "join":
+      state["players"].push({
+        name: msg.name,
+        score:0
+      });
+    case "answer":
+      state[answers].push({
+        name: msg.name,
+        answer: msg.answer
+      });
+    case "vote":
+      state[votes].push({
+        name: msg.name,
+        vote: msg.vote
+      })
+
+    //case "display":
+    //case "score":
+  }
+}
+
+//game loop
+while(1){
+  switch(state[gameState]){
+    case "join":
+      
+    case "answer":
+      
+    case "vote":
+      scoring();
+      assignHost();
+//clear answers and votes
+    //case "display":
+    //case "score":
+  }
+  
+};
+
+function scoring(){
+  var hostAns = state[answer].find(ans => ans.name === state[players][state[host]].name);
+  state[players].forEach((player) => {
+    playerAns = state[answer].find(ans => ans.name === player.name);
+    playervote = state[vote].find(vote => vote.name === player.name);
+    player.score += state[votes].filter((x) => x.vote == playerAns.answer).length-1;
+    if(playervote === hostAns.answer && player.name != state[players][state[host]].name){
+      player.score += 2;
+    }
+  });
+}
+
+function assignHost(){
+  if (state[players].length-1 > host + 1 ) state[host] = 0;
+  else host++;
+}

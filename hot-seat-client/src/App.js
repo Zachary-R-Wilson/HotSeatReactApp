@@ -16,9 +16,32 @@ class App extends React.Component {
       name: "",
       answer: "",
       vote: "",
-      Score: "",
-      gameState: gameStates[0]
+      scores: [],
+      gameState: gameStates[0],
+      answers:[]
     };
+    this.sendMessage = this.sendMessage.bind(this);
+    this.handleMessage = this.handleMessage.bind(this);
+    this.props.socket.on('update-state', this.handleStateUpdate);
+    this.props.socket.on('message', this.handleMessage);
+  }
+
+  handleMessage(msg) {
+    this.setState({
+      score: msg.score,
+      gameState: msg.gameState,
+      answers: msg.answers
+    });
+  }
+
+  sendMessage() {
+    this.props.socket.emit('message', {
+      name: this.state.name,
+      answer: this.state.answer,
+      vote: this.state.vote,
+      score: this.state.score,
+      gamestate: this.state.gameState
+    });
   }
 
   handleNameEnter = (enteredName) => {
@@ -33,6 +56,7 @@ class App extends React.Component {
       answer: uAnswer,
       gameState: gameStates[2]
     });
+    this.sendMessage();
   }
 
   render() {
