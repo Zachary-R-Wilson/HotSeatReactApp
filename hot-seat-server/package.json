@@ -1,0 +1,18 @@
+{
+  "name": "hot-seat-server",
+  "version": "1.0.0",
+  "description": "the server for the hot seat react app",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "build": "rm -rf public && cd ../hot-seat-client && npm run build && cp -r build ../hot-seat-server/public"
+  },
+  "author": "Zachary Wilson",
+  "license": "ISC",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.19.2",
+    "socket.io": "^4.7.5"
+  }
+}
