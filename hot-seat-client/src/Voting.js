@@ -17,7 +17,6 @@ class Voting extends React.Component{
 
     render() {
         const { answers = [{ name: 'server', answer: 'Fail' }] } = this.props;
-        const { vote } = this.state;
 
         return(
             <div>
@@ -25,15 +24,14 @@ class Voting extends React.Component{
                     <div
                         key={index}
                         onClick={() => this.handleVoteClick(item.answer)}
-                        // style={{
-                        //     padding: '10px',
-                        //     margin: '5px',
-                        //     border: '1px solid black',
-                        //     cursor: 'pointer',
-                        //     backgroundColor: vote === item.answer ? 'lightblue' : 'white'
-                        // }}
+                        style={{
+                            padding: '10px',
+                            margin: '5px',
+                            border: '1px solid black',
+                            cursor: 'pointer'
+                        }}
                     >
-                        <strong>{item.name}:</strong> {item.answer}
+                        {item.answer}
                     </div>
                 ))}
             </div>

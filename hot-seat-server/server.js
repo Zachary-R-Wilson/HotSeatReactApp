@@ -26,9 +26,11 @@ app.all('*', function (req, res) {
 
 io.on('connection', (socket) => {
   socket.on('message', handleMessage);
+  ActivePlayers++;
   console.log("Player Has Connected.");
 
   socket.on('disconnect', () => {
+    ActivePlayers--;
     console.log("Player Has Disconnected.");
   });
 });
@@ -36,6 +38,7 @@ io.on('connection', (socket) => {
 server.listen(port, () => console.log(`Listening on http://localhost:${port}`));
 setInterval(gameLoop, 1000);
 
+let ActivePlayers = 0;
 let waitingPlayers = 0;
 var state = {
   host: 0,
@@ -50,7 +53,7 @@ function gameLoop() {
   console.log(state);
   switch (state.gameState) {
     case "join":
-      if (waitingPlayers == state.players.length) {
+      if (waitingPlayers == ActivePlayers) {
         waitingPlayers = 0;
         state.gameState = "answer";
         io.emit("message", {
@@ -62,7 +65,7 @@ function gameLoop() {
       break;
 
     case "answer":
-      if (waitingPlayers == state.players.length) {
+      if (waitingPlayers == ActivePlayers) {
         waitingPlayers = 0;
         state.gameState = "vote";
         io.emit("message", {
@@ -74,26 +77,29 @@ function gameLoop() {
       break;
 
     case "vote":
-      if (waitingPlayers == state.players.length) {
+      if (waitingPlayers == ActivePlayers) {
         scoring();
-        assignHost();
         waitingPlayers = 0;
         state.gameState = "display";
         io.emit("message", {
           gameState: "display",
-          answers: [],
-          scores: state.scores
+          answers: state.answers,
+          scores: state.players
         });
+        state.answers = [];
+        state.votes = [];
       }
       break;
 
-    // case "display":
-    // case "score":
+    case "next":
+      if (waitingPlayers == ActivePlayers) {  
+        assignHost();
+      }
+      break;
   }
 }
 
 function handleMessage(msg) {
-  //console.log(msg);
   switch (msg.gameState) {
     case "join":
       state.players.push({
@@ -121,25 +127,28 @@ function handleMessage(msg) {
       state.gameState = "vote";
       waitingPlayers++;
       break;
-
-    // case "display":
-    // case "score":
   }
 }
 
+// Host cannot vote --SCORING BROKEN --
 function scoring(){
   var hostAns = state.answers.find(ans => ans.name == state.players[state.host].name);
   state.players.forEach((player) => {
-    playerAns = state.answers.find(ans => ans.name == player.name);
-    playervote = state.votes.find(vote => vote.name == player.name);
-    player.score += state.votes.filter((x) => x.vote == playerAns.answer).length-1;
-    if(playervote === hostAns.answer && player.name != state.players[state.host].name){
-      player.score += 2;
+    if(player.name === state.players[state.host].name){
+      player.score += state.votes.filter((x) => x.vote == hostAns && x.name != player.name).length;
     }
+    else{
+      playerAns = state.answers.find(ans => ans.name == player.name);
+      playervote = state.votes.find(vote => vote.name == player.name);
+      player.score += state.votes.filter((x) => x.vote == playerAns.answer && x.name != player.name).length;
+      if(playervote === hostAns.answer){
+        player.score += 2;
+      }
+    }    
   });
 }
 
 function assignHost(){
-  if (state.players.length-1 < state.host + 1 ) state.host = 0;
+  if (ActivePlayers-1 < state.host + 1 ) state.host = 0;
   else state.host++;
 }

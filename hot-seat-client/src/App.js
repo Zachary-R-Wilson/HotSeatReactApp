@@ -7,7 +7,7 @@ import DisplayAnswers from './DisplayAnswers';
 import Scoring from './Scoring';
 import Waiting from './Waiting';
 
-const gameStates = ["wait","join", "answer", "vote", "display", "score"];
+const gameStates = ["wait","join", "answer", "vote", "display"];
 
 class App extends React.Component {
   constructor(props) {
@@ -65,7 +65,14 @@ class App extends React.Component {
     });
   }
 
+  handleNextRound = () => {
+    this.setState({ gameState: gameStates[1] }, () => {
+      this.sendMessage();
+      this.setState({ gameState: gameStates[0] });
+    });
+  }
 
+//// Create Special Host permissions to solve the duplicate answers issue/+4
   render() {
     switch(this.state.gameState){
       default:
@@ -99,13 +106,7 @@ class App extends React.Component {
       case gameStates[4]:
         return (
           <div className="App">
-            <DisplayAnswers onNameEnter={this.handleNameEnter}/>
-          </div>
-        );
-      case gameStates[5]:
-        return (
-          <div className="App">
-            <Scoring onNameEnter={this.handleNameEnter}/>
+            <DisplayAnswers answers={this.state.answers} scores={this.state.scores} onNext={this.handleNextRound}/>
           </div>
         );
     }    
