@@ -58,6 +58,14 @@ class App extends React.Component {
     });
   }
 
+  handleVote = (uVote) => {
+    this.setState({vote: uVote}, () => {
+      this.sendMessage();
+      this.setState({ gameState: gameStates[0] });
+    });
+  }
+
+
   render() {
     switch(this.state.gameState){
       default:
@@ -82,24 +90,24 @@ class App extends React.Component {
             <Answering onAnswerEnter={this.handleAnswerChange}/>
           </div>
         );
-      // case gameStates[3]:
-      //   return (
-      //     <div className="App">
-      //       <Voting onNameEnter={this.handleNameEnter}/>
-      //     </div>
-      //   );
-      // case gameStates[4]:
-      //   return (
-      //     <div className="App">
-      //       <DisplayAnswers onNameEnter={this.handleNameEnter}/>
-      //     </div>
-      //   );
-      // case gameStates[5]:
-      //   return (
-      //     <div className="App">
-      //       <Scoring onNameEnter={this.handleNameEnter}/>
-      //     </div>
-      //   );
+      case gameStates[3]:
+        return (
+          <div className="App">
+            <Voting answers={this.state.answers} onVoteEnter={this.handleVote}/>
+          </div>
+        );
+      case gameStates[4]:
+        return (
+          <div className="App">
+            <DisplayAnswers onNameEnter={this.handleNameEnter}/>
+          </div>
+        );
+      case gameStates[5]:
+        return (
+          <div className="App">
+            <Scoring onNameEnter={this.handleNameEnter}/>
+          </div>
+        );
     }    
   }
 }

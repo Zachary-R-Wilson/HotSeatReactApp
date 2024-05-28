@@ -5,23 +5,37 @@ class Voting extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            name: ""
+            vote: ""
         }
     }
 
-    GoClick = () => {
-        var name = this.name.value;
-        this.props.onNameEnter(name);
+    handleVoteClick = (vote) => {
+        this.setState({ vote }, () => {
+            this.props.onVoteEnter(vote); // Call the parent callback with the selected vote
+        });
     }
 
     render() {
+        const { answers = [{ name: 'server', answer: 'Fail' }] } = this.props;
+        const { vote } = this.state;
+
         return(
             <div>
-                <label for="Name">Voting:</label>
-                <br></br>
-                <input type="text" id="Name" ref={(ref) => this.name = ref}></input>
-                <br/>
-                <button type="button" onClick={this.GoClick}>GO!</button>
+                {answers.map((item, index) => (
+                    <div
+                        key={index}
+                        onClick={() => this.handleVoteClick(item.answer)}
+                        // style={{
+                        //     padding: '10px',
+                        //     margin: '5px',
+                        //     border: '1px solid black',
+                        //     cursor: 'pointer',
+                        //     backgroundColor: vote === item.answer ? 'lightblue' : 'white'
+                        // }}
+                    >
+                        <strong>{item.name}:</strong> {item.answer}
+                    </div>
+                ))}
             </div>
         )
     }
