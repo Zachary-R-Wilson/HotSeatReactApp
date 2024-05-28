@@ -17,7 +17,7 @@ class DisplayAnswers extends React.Component{
     render() {
         return(
             <div>
-                <label for="Name">Enter Your Name:</label>
+                <label for="Name">Display Answers:</label>
                 <br></br>
                 <input type="text" id="Name" ref={(ref) => this.name = ref}></input>
                 <br/>
